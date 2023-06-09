@@ -1,18 +1,22 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:trading_app/feature/home_view/view/home_view.dart';
 
-class BottomNavProvider extends ChangeNotifier {
-  final int selectedIndex = 0;
+import '../../wishlist/view/wishlist.dart';
 
-  int index = 0;
+class BottomNavProvider extends ChangeNotifier {
+  int selectedIndex = 0;
   void indexChange(int ind) {
-    index = ind;
+    selectedIndex = ind;
+
+    log(selectedIndex.toString());
     notifyListeners();
   }
 
   List<Widget> tabItems = [
     const HomeView(),
-    const HomeView(),
+    const WishListView(),
     const HomeView(),
   ];
 }
