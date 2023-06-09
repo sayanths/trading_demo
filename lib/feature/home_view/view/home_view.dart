@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:trading_app/core/color/color.dart';
+import 'package:trading_app/feature/home_view/view_model/home_view.dart';
 import 'package:trading_app/responsive/responsive.dart';
 
-class HomeProvider extends StatelessWidget {
-  const HomeProvider({super.key});
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -92,33 +94,71 @@ class HomeProvider extends StatelessWidget {
                 ],
               ),
             ),
-            Wrap(
-              children: List.generate(10, (index) {
-                return Container(
-                  margin: const EdgeInsets.all(10),
-                  height: Responsive.heightMultiplier! * 18,
-                  width: Responsive.widthMultiplier! * 40,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: const Color.fromARGB(255, 255, 255, 255)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CircleAvatar(),
-                        const Text('data'),
-                        const Text('Price'),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: const [CircleAvatar(), Text('')],
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              }),
-            )
+            Consumer<HomeProvider>(
+              builder: (context, value, _) => StreamBuilder<List<dynamic>>(
+                stream: value.dataStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final dataList = snapshot.data!;
+                    // Display the streamed data
+                    return Wrap(
+                      children: List.generate(10, (index) {
+                        final item = dataList[index];
+                        final dateTime = item['timestamp'];
+                        final openPrice = item['open'];
+                        final highPrice = item['high'];
+                        final lowPrice = item['low'];
+                        final closePrice = item['close'];
+                        final volume = item['volume'];
+                        return Container(
+                          margin: const EdgeInsets.all(10),
+                          height: Responsive.heightMultiplier! * 18,
+                          width: Responsive.widthMultiplier! * 40,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: const Color.fromARGB(255, 255, 255, 255)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const CircleAvatar(),
+                                const Text('lowPrice'),
+                                const Text('Price'),
+                                //                    Text('Date & Time: ${dateTime ?? 'N/A'}'),
+                                // Text('Open: ${openPrice ?? 'N/A'}'),
+                                // Text('High: ${highPrice ?? 'N/A'}'),
+                                // Text('Low: ${lowPrice ?? 'N/A'}'),
+                                // Text('Close: ${closePrice ?? 'N/A'}'),
+                                // Text('Volume: ${volume ?? 'N/A'}'),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: const [CircleAvatar(), Text('')],
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                    // ListView.builder(
+                    //   itemCount: dataList.length,
+                    //   itemBuilder: (context, index) {
+                    //     final item = dataList[index];
+                    //     return ListTile(
+                    //       title: Text('Item ${index + 1}'),
+                    //       subtitle: Text(item.toString()),
+                    //     );
+                    //   },
+                    // );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
+              ),
+            ),
           ],
         ),
       ),
