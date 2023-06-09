@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
                 scaffoldMessengerKey: Messenger.messengerKey,
                 navigatorKey: Routes.routeKey,
                 debugShowCheckedModeBanner: false,
-                title: 'Public App',
+                title: 'Trading App',
                 home: const SplashView(),
               );
             },
