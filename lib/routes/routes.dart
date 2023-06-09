@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:trading_app/feature/login_view/view/login_view.dart';
+import 'package:trading_app/feature/home_view/view/home_view.dart';
 
 class Routes {
   static final routeKey = GlobalKey<NavigatorState>();
