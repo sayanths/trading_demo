@@ -11,9 +11,7 @@ class BottomNavView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<BottomNavProvider>(
       builder: (context, value, _) => Scaffold(
-        body: Center(
-          child: value.tabItems[value.selectedIndex],
-        ),
+        body: value.tabItems[value.selectedIndex],
         bottomNavigationBar: FlashyTabBar(
           animationCurve: Curves.bounceIn,
           selectedIndex: value.selectedIndex,

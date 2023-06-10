@@ -102,7 +102,7 @@ class HomeView extends StatelessWidget {
                     final dataList = snapshot.data!;
                     // Display the streamed data
                     return Wrap(
-                      children: List.generate(10, (index) {
+                      children: List.generate(dataList.length, (index) {
                         final item = dataList[index];
                         final dateTime = item['timestamp'];
                         final openPrice = item['open'];
@@ -122,18 +122,29 @@ class HomeView extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const CircleAvatar(),
-                                const Text('lowPrice'),
-                                const Text('Price'),
-                                //                    Text('Date & Time: ${dateTime ?? 'N/A'}'),
-                                // Text('Open: ${openPrice ?? 'N/A'}'),
-                                // Text('High: ${highPrice ?? 'N/A'}'),
-                                // Text('Low: ${lowPrice ?? 'N/A'}'),
-                                // Text('Close: ${closePrice ?? 'N/A'}'),
+                                // const CircleAvatar(),
+                                // const Text('lowPrice'),
+                                // const Text('Price'),
+                                Text('Date & Time: ${dateTime ?? 'N/A'}'),
+                                Text('Open: ${openPrice ?? 'N/A'}'),
+                                Text('High: ${highPrice ?? 'N/A'}'),
+                                Text('Low: ${lowPrice ?? 'N/A'}'),
+                                Text('Close: ${closePrice ?? 'N/A'}'),
                                 // Text('Volume: ${volume ?? 'N/A'}'),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
-                                  children: const [CircleAvatar(), Text('')],
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: Apc.textColor,
+                                      child: IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                            Icons.add,
+                                            color: Apc.white,
+                                          )),
+                                    ),
+                                    const Text('')
+                                  ],
                                 )
                               ],
                             ),
