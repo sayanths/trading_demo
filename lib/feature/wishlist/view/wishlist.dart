@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:trading_app/core/color/color.dart';
 import 'package:trading_app/feature/home_view/view_model/home_view.dart';
@@ -61,9 +62,10 @@ class WishListView extends StatelessWidget {
                                 await value.getAllWaterDbDetails();
                               });
                             },
-                            icon: const Icon(
-                              Icons.add,
-                              color: Apc.white,
+                            icon: Icon(
+                              IconlyBold.heart,
+                              color:
+                                  value.valueFav == true ? Apc.red : Apc.white,
                             ),
                           ),
                         ),

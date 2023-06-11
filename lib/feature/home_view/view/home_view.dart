@@ -1,9 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:trading_app/core/color/color.dart';
-import 'package:trading_app/feature/home_view/model/api.dart';
+import 'package:trading_app/feature/home_view/model/stock_data.dart';
 import 'package:trading_app/feature/home_view/model/wish_list.dart';
 import 'package:trading_app/feature/home_view/view_model/home_view.dart';
 import 'package:trading_app/responsive/responsive.dart';
@@ -39,7 +40,9 @@ class HomeView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const CircleAvatarWidgetForAppBAR(),
+                      const CircleAvatarWidgetForAppBAR(
+                        child1: Icon(IconlyBold.profile),
+                      ),
                       Text(
                         'Trade Brain',
                         style: TextStyle(
@@ -47,7 +50,12 @@ class HomeView extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: Responsive.textMultiplier! * 2.3),
                       ),
-                      const CircleAvatarWidgetForAppBAR(),
+                      const CircleAvatarWidgetForAppBAR(
+                        child1: Icon(
+                          IconlyBold.search,
+                          size: 15,
+                        ),
+                      ),
                     ],
                   ),
                   const Spacer(),
@@ -98,6 +106,9 @@ class HomeView extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(
+              height: Responsive.heightMultiplier! * 3,
+            ),
             Consumer<HomeProvider>(
               builder: (context, value, _) => StreamBuilder<List<StockData>>(
                 stream: value.fetchStockData(),
@@ -116,7 +127,7 @@ class HomeView extends StatelessWidget {
                         final volume = item.volume;
                         return Container(
                           margin: const EdgeInsets.all(5),
-                          height: Responsive.heightMultiplier! * 30,
+                          height: Responsive.heightMultiplier! * 25,
                           width: Responsive.widthMultiplier! * 45,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
@@ -140,6 +151,8 @@ class HomeView extends StatelessWidget {
                                       backgroundColor: Apc.textColor,
                                       child: IconButton(
                                         onPressed: () async {
+                                          value.wishListAdded(true, index);
+                                          bool val = true;
                                           final data = WishlistModel(
                                             id: DateTime.now()
                                                 .microsecondsSinceEpoch
@@ -150,16 +163,20 @@ class HomeView extends StatelessWidget {
                                             open: openPrice,
                                             timestamp: dateTime,
                                             volume: volume,
+                                            whistListAdded: val,
                                           );
+
                                           await value
                                               .addWaterDetails(data)
                                               .whenComplete(() async {
                                             await value.getAllWaterDbDetails();
                                           });
                                         },
-                                        icon: const Icon(
-                                          Icons.add,
-                                          color: Apc.white,
+                                        icon: Icon(
+                                          IconlyBold.heart,
+                                          color: value.valueFav == true
+                                              ? Apc.red
+                                              : Apc.white,
                                         ),
                                       ),
                                     ),
@@ -242,8 +259,11 @@ class ButtonWithDraw extends StatelessWidget {
 }
 
 class CircleAvatarWidgetForAppBAR extends StatelessWidget {
+  final Widget child1;
+
   const CircleAvatarWidgetForAppBAR({
     super.key,
+    required this.child1,
   });
 
   @override
@@ -255,9 +275,10 @@ class CircleAvatarWidgetForAppBAR extends StatelessWidget {
           CircleAvatar(
             backgroundColor: Apc.white.withOpacity(0.5),
             radius: 20,
-            child: const CircleAvatar(
+            child: CircleAvatar(
               radius: 15,
               backgroundColor: Apc.white,
+              child: child1,
             ),
           ),
         ],

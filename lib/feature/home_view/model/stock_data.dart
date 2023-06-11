@@ -5,6 +5,7 @@ class StockData {
   final double? low;
   final double? close;
   final int? volume;
+  
 
   StockData({
      this.dateTime,

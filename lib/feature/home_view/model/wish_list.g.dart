@@ -24,13 +24,14 @@ class WishlistModelAdapter extends TypeAdapter<WishlistModel> {
       high: fields[3] as double?,
       low: fields[4] as double?,
       volume: fields[6] as num?,
+      whistListAdded: fields[7] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, WishlistModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class WishlistModelAdapter extends TypeAdapter<WishlistModel> {
       ..writeByte(5)
       ..write(obj.close)
       ..writeByte(6)
-      ..write(obj.volume);
+      ..write(obj.volume)
+      ..writeByte(7)
+      ..write(obj.whistListAdded);
   }
 
   @override

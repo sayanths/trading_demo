@@ -24,12 +24,17 @@ class WishlistModel {
   @HiveField(6)
   final num? volume;
 
-  WishlistModel(
-      {required this.id,
-      this.timestamp,
-      this.open,
-      this.close,
-      this.high,
-      this.low,
-      this.volume});
+  @HiveField(7)
+  bool? whistListAdded;
+
+  WishlistModel({
+    required this.id,
+    this.timestamp,
+    this.open,
+    this.close,
+    this.high,
+    this.low,
+    this.volume,
+    this.whistListAdded,
+  });
 }
