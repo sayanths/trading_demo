@@ -22,7 +22,7 @@ class WishlistModel {
   final double? close;
 
   @HiveField(6)
-  final double? volume;
+  final num? volume;
 
   WishlistModel(
       {required this.id,

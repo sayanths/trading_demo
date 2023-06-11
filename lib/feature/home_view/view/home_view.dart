@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trading_app/core/color/color.dart';
+import 'package:trading_app/feature/home_view/model/api.dart';
 import 'package:trading_app/feature/home_view/model/wish_list.dart';
 import 'package:trading_app/feature/home_view/view_model/home_view.dart';
 import 'package:trading_app/responsive/responsive.dart';
@@ -96,91 +99,79 @@ class HomeView extends StatelessWidget {
               ),
             ),
             Consumer<HomeProvider>(
-              builder: (context, value, _) => StreamBuilder<List<dynamic>>(
-                stream: value.dataStream,
+              builder: (context, value, _) => StreamBuilder<List<StockData>>(
+                stream: value.fetchStockData(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final dataList = snapshot.data!;
-                    // Display the streamed data
+                    log(dataList.toString());
                     return Wrap(
                       children: List.generate(dataList.length, (index) {
                         final item = dataList[index];
-                        final dateTime = item['timestamp'];
-                        final openPrice = item['open'];
-                        final highPrice = item['high'];
-                        final lowPrice = item['low'];
-                        final closePrice = item['close'];
-                        final volume = item['volume'];
+                        final dateTime = item.dateTime;
+                        final openPrice = item.open;
+                        final highPrice = item.high;
+                        final lowPrice = item.low;
+                        final closePrice = item.close;
+                        final volume = item.volume;
                         return Container(
-                          margin: const EdgeInsets.all(10),
-                          height: Responsive.heightMultiplier! * 18,
-                          width: Responsive.widthMultiplier! * 40,
+                          margin: const EdgeInsets.all(5),
+                          height: Responsive.heightMultiplier! * 30,
+                          width: Responsive.widthMultiplier! * 45,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: const Color.fromARGB(255, 255, 255, 255)),
+                            borderRadius: BorderRadius.circular(8),
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // const CircleAvatar(),
-                                // const Text('lowPrice'),
-                                // const Text('Price'),
-                                Text('Date & Time: ${dateTime ?? 'N/A'}'),
-                                Text('Open: ${openPrice ?? 'N/A'}'),
-                                Text('High: ${highPrice ?? 'N/A'}'),
-                                Text('Low: ${lowPrice ?? 'N/A'}'),
-                                Text('Close: ${closePrice ?? 'N/A'}'),
-                                // Text('Volume: ${volume ?? 'N/A'}'),
+                                Text('Date & Time: $dateTime'),
+                                Text('Open: $openPrice '),
+                                Text('High: $highPrice '),
+                                Text('Low: $lowPrice  '),
+                                Text('Close: $closePrice'),
+                                Text('Volume: $volume '),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     CircleAvatar(
                                       backgroundColor: Apc.textColor,
                                       child: IconButton(
-                                          onPressed: () async {
-                                            final data = WishlistModel(
-                                              id: DateTime.now()
-                                                  .microsecondsSinceEpoch
-                                                  .toInt(),
-                                              close: closePrice ?? 0.0,
-                                              high: highPrice ?? 0.0,
-                                              low: lowPrice ?? 0.0,
-                                              open: openPrice ?? 0.0,
-                                              timestamp: dateTime,
-                                              volume: volume ?? 0.0,
-                                            );
-                                            await value
-                                                .addWaterDetails(data)
-                                                .whenComplete(() async {
-                                              await value
-                                                  .getAllWaterDbDetails();
-                                            });
-                                          },
-                                          icon: const Icon(
-                                            Icons.add,
-                                            color: Apc.white,
-                                          )),
+                                        onPressed: () async {
+                                          final data = WishlistModel(
+                                            id: DateTime.now()
+                                                .microsecondsSinceEpoch
+                                                .toInt(),
+                                            close: closePrice,
+                                            high: highPrice,
+                                            low: lowPrice,
+                                            open: openPrice,
+                                            timestamp: dateTime,
+                                            volume: volume,
+                                          );
+                                          await value
+                                              .addWaterDetails(data)
+                                              .whenComplete(() async {
+                                            await value.getAllWaterDbDetails();
+                                          });
+                                        },
+                                        icon: const Icon(
+                                          Icons.add,
+                                          color: Apc.white,
+                                        ),
+                                      ),
                                     ),
-                                    const Text('')
+                                    const Text(''),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                           ),
                         );
                       }),
                     );
-                    // ListView.builder(
-                    //   itemCount: dataList.length,
-                    //   itemBuilder: (context, index) {
-                    //     final item = dataList[index];
-                    //     return ListTile(
-                    //       title: Text('Item ${index + 1}'),
-                    //       subtitle: Text(item.toString()),
-                    //     );
-                    //   },
-                    // );
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
