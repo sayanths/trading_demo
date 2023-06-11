@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trading_app/core/color/color.dart';
+import 'package:trading_app/feature/home_view/model/wish_list.dart';
 import 'package:trading_app/feature/home_view/view_model/home_view.dart';
 import 'package:trading_app/responsive/responsive.dart';
 
@@ -137,7 +138,25 @@ class HomeView extends StatelessWidget {
                                     CircleAvatar(
                                       backgroundColor: Apc.textColor,
                                       child: IconButton(
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            final data = WishlistModel(
+                                              id: DateTime.now()
+                                                  .microsecondsSinceEpoch
+                                                  .toInt(),
+                                              close: closePrice ?? 0.0,
+                                              high: highPrice ?? 0.0,
+                                              low: lowPrice ?? 0.0,
+                                              open: openPrice ?? 0.0,
+                                              timestamp: dateTime,
+                                              volume: volume ?? 0.0,
+                                            );
+                                            await value
+                                                .addWaterDetails(data)
+                                                .whenComplete(() async {
+                                              await value
+                                                  .getAllWaterDbDetails();
+                                            });
+                                          },
                                           icon: const Icon(
                                             Icons.add,
                                             color: Apc.white,

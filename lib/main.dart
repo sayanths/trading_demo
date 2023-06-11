@@ -1,6 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:trading_app/feature/home_view/model/wish_list.dart';
 import 'package:trading_app/feature/splash_view/view/splash_view.dart';
 import 'package:trading_app/provider/provider.dart';
 import 'package:trading_app/responsive/responsive.dart';
@@ -8,6 +9,11 @@ import 'package:trading_app/routes/pop_up.dart';
 import 'package:trading_app/routes/routes.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  if (!Hive.isAdapterRegistered(WishlistModelAdapter().typeId)) {
+    Hive.registerAdapter(WishlistModelAdapter());
+  }
   runApp(
     const MyApp(),
   );
