@@ -8,6 +8,7 @@ import 'package:trading_app/feature/home_view/model/stock_data.dart';
 import 'package:trading_app/feature/home_view/model/wish_list.dart';
 import 'package:trading_app/feature/home_view/view_model/home_view.dart';
 import 'package:trading_app/responsive/responsive.dart';
+import 'package:trading_app/routes/routes.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -50,10 +51,15 @@ class HomeView extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: Responsive.textMultiplier! * 2.3),
                       ),
-                      const CircleAvatarWidgetForAppBAR(
-                        child1: Icon(
-                          IconlyBold.search,
-                          size: 15,
+                      GestureDetector(
+                        onTap: () {
+                          Routes.push(screen: '/SearchView');
+                        },
+                        child: const CircleAvatarWidgetForAppBAR(
+                          child1: Icon(
+                            IconlyBold.search,
+                            size: 15,
+                          ),
                         ),
                       ),
                     ],
@@ -125,6 +131,7 @@ class HomeView extends StatelessWidget {
                         final lowPrice = item.low;
                         final closePrice = item.close;
                         final volume = item.volume;
+
                         return Container(
                           margin: const EdgeInsets.all(5),
                           height: Responsive.heightMultiplier! * 25,
@@ -151,7 +158,7 @@ class HomeView extends StatelessWidget {
                                       backgroundColor: Apc.textColor,
                                       child: IconButton(
                                         onPressed: () async {
-                                          value.wishListAdded(true, index);
+                                          value.wishListAdded(true);
                                           bool val = true;
                                           final data = WishlistModel(
                                             id: DateTime.now()
@@ -190,7 +197,10 @@ class HomeView extends StatelessWidget {
                       }),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return Text(
+                      'Error: ${snapshot.error}',
+                      style: const TextStyle(color: Apc.white),
+                    );
                   } else {
                     return const CircularProgressIndicator();
                   }
@@ -283,6 +293,21 @@ class CircleAvatarWidgetForAppBAR extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+
+class StockSymbol {
+  final String symbol;
+  final String name;
+
+  StockSymbol({required this.symbol, required this.name});
+
+  factory StockSymbol.fromJson(Map<String, dynamic> json) {
+    return StockSymbol(
+      symbol: json['1. symbol'] ?? '',
+      name: json['2. name'] ?? '',
     );
   }
 }

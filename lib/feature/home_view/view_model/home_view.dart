@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:trading_app/feature/home_view/model/search_model.dart';
 import 'package:trading_app/feature/home_view/model/stock_data.dart';
 import 'package:trading_app/feature/home_view/model/wish_list.dart';
 
@@ -47,23 +49,37 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-  // bool valueFav = false;
+  // final TextEditingController _searchText = TextEditingController();
+  // get searchText => _searchText;
 
-  // void wishListAdded(bool val) {
-  //   valueFav = val;
-  //   log(valueFav.toString());
+  // List<StockData> foundUsers = [];
+  // String enteredKeyword = "";
+  // void runFilter(String enteredKeyword) {
+  //   this.enteredKeyword = enteredKeyword;
+  //   log(enteredKeyword.toString());
+  //   List<StockData> results = [];
+  //   if (enteredKeyword.isEmpty) {
+  //     results = searchText;
+  //     notifyListeners();
+  //   } else {
+  //     results = searchText
+  //         .where((user) =>
+  //             user.name.toLowerCase().contains(enteredKeyword.toLowerCase()))
+  //         .toList();
+  //   }
+
+  //   foundUsers = results;
   //   notifyListeners();
   // }
-  bool valueFav = false;
-int selectedTabIndex = 0; // Assuming you have a selectedTabIndex variable
 
-void wishListAdded(bool val, int index) {
-  if (index == selectedTabIndex) {
+  // final searchController = TextEditingController();
+  bool valueFav = false;
+
+  void wishListAdded(bool val) {
     valueFav = val;
     log(valueFav.toString());
     notifyListeners();
   }
-}
 
   String dbName = 'whishList';
   List<WishlistModel> waterDbList = [];
@@ -83,8 +99,40 @@ void wishListAdded(bool val, int index) {
   Future<void> deleteWaterDetails(int index) async {
     final box = await Hive.openBox<WishlistModel>(dbName);
     box.deleteAt(index);
-    wishListAdded(waterDbList[index].whistListAdded = false,index );
-    
+    wishListAdded(waterDbList[index].whistListAdded = false);
+
     getAllWaterDbDetails();
+  }
+
+  final TextEditingController searchController = TextEditingController();
+  List<StockSymbol> searchResults = [];
+  bool isLoading = false;
+
+  Future<void> searchStocks(String query) async {
+    isLoading = true;
+    notifyListeners();
+
+    final apiUrl =
+        'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=$query&apikey=3WCCUFJAOII9K4MU';
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['bestMatches'] != null) {
+        final List<StockSymbol> symbols = [];
+        for (var item in data['bestMatches']) {
+          symbols.add(StockSymbol.fromJson(item));
+        }
+
+        searchResults = symbols;
+        notifyListeners();
+      }
+    } else {
+      // Handle error response
+      print('Error: ${response.statusCode}');
+    }
+
+    isLoading = false;
+    notifyListeners();
   }
 }

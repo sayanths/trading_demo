@@ -1,17 +1,15 @@
-
 import 'package:flutter/material.dart';
 import 'package:trading_app/feature/bottom_av/view/bottom_nav.dart';
 import 'package:trading_app/feature/home_view/view/home_view.dart';
-
-import '../feature/bottom_av/view_model/bottom_nav_pro.dart';
+import 'package:trading_app/feature/home_view/view/widget/search.dart';
 
 class Routes {
   static final routeKey = GlobalKey<NavigatorState>();
 
   Map<String, Widget Function(BuildContext)> route = {
     "/homeView": (context) => const HomeView(),
-     "/BottomNavView": (context) =>  BottomNavView(),
-    
+    "/BottomNavView": (context) => const BottomNavView(),
+    "/SearchView": (context) => StockSearchPage(),
   };
 
   static push({required var screen}) {
