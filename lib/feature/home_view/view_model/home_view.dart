@@ -84,6 +84,7 @@ class HomeProvider extends ChangeNotifier {
   String dbName = 'whishList';
   List<WishlistModel> waterDbList = [];
   Future<void> addWaterDetails(WishlistModel value) async {
+    waterDbList.clear();
     final box = await Hive.openBox<WishlistModel>(dbName);
     await box.put(value.hashCode, value);
   }

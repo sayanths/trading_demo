@@ -179,11 +179,9 @@ class HomeView extends StatelessWidget {
                                             await value.getAllWaterDbDetails();
                                           });
                                         },
-                                        icon: Icon(
+                                        icon: const Icon(
                                           IconlyBold.heart,
-                                          color: value.valueFav == true
-                                              ? Apc.red
-                                              : Apc.white,
+                                          color: Apc.white,
                                         ),
                                       ),
                                     ),
@@ -296,7 +294,6 @@ class CircleAvatarWidgetForAppBAR extends StatelessWidget {
     );
   }
 }
-
 
 class StockSymbol {
   final String symbol;
