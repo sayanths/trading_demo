@@ -13,6 +13,11 @@ class StockSearchPage extends StatefulWidget {
 
 class _StockSearchPageState extends State<StockSearchPage> {
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -43,7 +48,10 @@ class _StockSearchPageState extends State<StockSearchPage> {
             value.isLoading
                 ? const CircularProgressIndicator()
                 : Expanded(
-                    child: ListView.builder(
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) {
+                        return const Divider();
+                      },
                       shrinkWrap: true,
                       itemCount: value.searchResults.length,
                       itemBuilder: (context, index) {
@@ -51,6 +59,7 @@ class _StockSearchPageState extends State<StockSearchPage> {
                         return ListTile(
                           title: Text(symbol.name),
                           subtitle: Text(symbol.symbol),
+                          trailing: Text(symbol.marketOpen),
                         );
                       },
                     ),
