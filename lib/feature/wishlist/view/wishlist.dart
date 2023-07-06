@@ -38,6 +38,7 @@ class WishListView extends StatelessWidget {
                   final lowPrice = item.low;
                   final closePrice = item.close;
                   final volume = item.volume;
+                  final id = item.id;
 
                   return Container(
                     margin: const EdgeInsets.all(5),
@@ -56,7 +57,9 @@ class WishListView extends StatelessWidget {
                           Text('Open: ${openPrice ?? 'N/A'}'),
                           Text('High: ${highPrice ?? 'N/A'}'),
                           Text('Low: ${lowPrice ?? 'N/A'}'),
-                          Text('Close: ${closePrice ?? 'N/A'}'),
+                        //  Text('Close: ${closePrice ?? 'N/A'}'),
+                          Text(
+                              'Close: $id '),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [

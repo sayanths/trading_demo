@@ -23,7 +23,7 @@ class WishlistModelAdapter extends TypeAdapter<WishlistModel> {
       close: fields[5] as double?,
       high: fields[3] as double?,
       low: fields[4] as double?,
-      volume: fields[6] as num?,
+      volume: fields[6] as dynamic,
       whistListAdded: fields[7] as bool?,
     );
   }

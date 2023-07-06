@@ -4,7 +4,7 @@ part 'wish_list.g.dart';
 @HiveType(typeId: 1)
 class WishlistModel {
   @HiveField(0)
-  late int id;
+  final int id;
 
   @HiveField(1)
   final DateTime? timestamp;
@@ -22,7 +22,7 @@ class WishlistModel {
   final double? close;
 
   @HiveField(6)
-  final num? volume;
+  final dynamic volume;
 
   @HiveField(7)
   bool? whistListAdded;

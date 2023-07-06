@@ -57,9 +57,8 @@ class _StockSearchPageState extends State<StockSearchPage> {
                       itemBuilder: (context, index) {
                         var symbol = value.searchResults[index];
                         return ListTile(
-                          title: Text(symbol.name),
-                          subtitle: Text(symbol.symbol),
-                          trailing: Text(symbol.marketOpen),
+                          title: Text(symbol.name ?? ""),
+                          subtitle: Text(symbol.symbol ?? ""),
                         );
                       },
                     ),

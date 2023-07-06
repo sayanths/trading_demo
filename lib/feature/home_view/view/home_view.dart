@@ -125,6 +125,7 @@ class HomeView extends StatelessWidget {
                     return Wrap(
                       children: List.generate(dataList.length, (index) {
                         final item = dataList[index];
+                        final id = item.id;
                         final dateTime = item.dateTime;
                         final openPrice = item.open;
                         final highPrice = item.high;
@@ -132,6 +133,7 @@ class HomeView extends StatelessWidget {
                         final closePrice = item.close;
                         final volume = item.volume;
 
+                        log("${id.toString()}=======getting id");
                         return Container(
                           margin: const EdgeInsets.all(5),
                           height: Responsive.heightMultiplier! * 25,
@@ -147,10 +149,11 @@ class HomeView extends StatelessWidget {
                               children: [
                                 Text('Date & Time: $dateTime'),
                                 Text('Open: $openPrice '),
-                                Text('High: $highPrice '),
-                                Text('Low: $lowPrice  '),
-                                Text('Close: $closePrice'),
+                                // Text('High: $highPrice '),
+                                // Text('Low: $lowPrice  '),
+                               // Text('Close: $closePrice'),
                                 Text('Volume: $volume '),
+                                Text('id: $id '),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -158,30 +161,51 @@ class HomeView extends StatelessWidget {
                                       backgroundColor: Apc.textColor,
                                       child: IconButton(
                                         onPressed: () async {
-                                          value.wishListAdded(true);
-                                          bool val = true;
-                                          final data = WishlistModel(
-                                            id: DateTime.now()
-                                                .microsecondsSinceEpoch
-                                                .toInt(),
-                                            close: closePrice,
-                                            high: highPrice,
-                                            low: lowPrice,
-                                            open: openPrice,
-                                            timestamp: dateTime,
-                                            volume: volume,
-                                            whistListAdded: val,
-                                          );
-
-                                          await value
-                                              .addWaterDetails(data)
-                                              .whenComplete(() async {
-                                            await value.getAllWaterDbDetails();
-                                          });
+                                          final alreadyAdded = value.waterDbList
+                                              .any((wishlist) =>
+                                                  wishlist.id == item.id &&
+                                                  wishlist.whistListAdded ==
+                                                      true);
+                                          if (alreadyAdded) {
+                                            // ScaffoldMessenger.of(context)
+                                            //     .showSnackBar(
+                                            //   const SnackBar(
+                                            //     content: Text(
+                                            //         'Item already exists in the wishlist'),
+                                            //   ),
+                                            // );
+                                            // Show snackbar that the item already exists
+                                            return;
+                                          } else {
+                                            // Add to wishlist
+                                            final data = WishlistModel(
+                                              id: id,
+                                              close: closePrice,
+                                              high: highPrice,
+                                              low: lowPrice,
+                                              open: openPrice,
+                                              timestamp: dateTime,
+                                              volume: volume,
+                                              whistListAdded: true,
+                                            );
+                                            log("${data.id.toString()}=====wishlist id======");
+                                            await value
+                                                .addWaterDetails(data)
+                                                .whenComplete(() async {
+                                              await value
+                                                  .getAllWaterDbDetails();
+                                            });
+                                          }
                                         },
-                                        icon: const Icon(
+                                        icon: Icon(
                                           IconlyBold.heart,
-                                          color: Apc.white,
+                                          color: value.waterDbList.any(
+                                                  (wishlist) =>
+                                                      wishlist.id == item.id &&
+                                                      wishlist.whistListAdded ==
+                                                          true)
+                                              ? Colors.red
+                                              : Apc.white,
                                         ),
                                       ),
                                     ),

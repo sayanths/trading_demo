@@ -9,8 +9,16 @@ import 'package:http/http.dart' as http;
 import 'package:trading_app/feature/home_view/model/search_model.dart';
 import 'package:trading_app/feature/home_view/model/stock_data.dart';
 import 'package:trading_app/feature/home_view/model/wish_list.dart';
+import 'package:uuid/uuid.dart';
 
 class HomeProvider extends ChangeNotifier {
+  HomeProvider() {
+    getAllWaterDbDetails();
+    //fetchStockData();
+  }
+
+  Uuid uuid = const Uuid();
+
   Stream<List<StockData>> fetchStockData() async* {
     while (true) {
       try {
@@ -25,6 +33,7 @@ class HomeProvider extends ChangeNotifier {
 
           timeSeries.forEach((key, value) {
             stockData.add(StockData(
+              id: DateTime.now().millisecondsSinceEpoch,
               dateTime: DateTime.parse(key),
               open: double.parse(value['1. open']),
               high: double.parse(value['2. high']),
@@ -32,6 +41,7 @@ class HomeProvider extends ChangeNotifier {
               close: double.parse(value['4. close']),
               volume: int.parse(value['5. volume']),
             ));
+            log(stockData[0].id.toString());
           });
 
           yield stockData;
@@ -87,13 +97,17 @@ class HomeProvider extends ChangeNotifier {
     waterDbList.clear();
     final box = await Hive.openBox<WishlistModel>(dbName);
     await box.put(value.hashCode, value);
+    waterDbList.toSet();
+    notifyListeners();
   }
 
   Future<void> getAllWaterDbDetails() async {
     waterDbList.clear();
     final obj = await Hive.openBox<WishlistModel>(dbName);
-    waterDbList.addAll(obj.values.toList().reversed);
+    waterDbList.clear();
+    waterDbList.addAll(obj.values.toSet().toList().reversed);
     log(waterDbList.toString());
+    // log(waterDbList[0].id.toString());
     notifyListeners();
   }
 
@@ -114,20 +128,21 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
 
     final apiUrl =
-        'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=$query&apikey=3WCCUFJAOII9K4MU';
+        'https://dev.portal.tradebrains.in/api/search?keyword=$query';
     final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data['bestMatches'] != null) {
-        final List<StockSymbol> symbols = [];
-        for (var item in data['bestMatches']) {
-          symbols.add(StockSymbol.fromJson(item));
-        }
+      final List<dynamic> data = json.decode(response.body);
+      log(data.toString());
 
-        searchResults = symbols;
-        notifyListeners();
+      final List<StockSymbol> symbols = [];
+
+      for (var item in data) {
+        symbols.add(StockSymbol.fromJson(item));
       }
+
+      searchResults = symbols;
+      notifyListeners();
     } else {
       // Handle error response
       print('Error: ${response.statusCode}');
